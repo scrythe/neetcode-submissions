@@ -1,13 +1,19 @@
+#include <stdint.h>
 #include <stdio.h>
+#include <string>
 #include <vector>
+using std::string;
 using std::vector;
 
-#include "Data Structures & Algorithms/duplicate-integer/submission-6.cpp"
+#include "a.cpp"
 
 int main() {
-  vector<int> input = {-1000000000, 1000000000, 0, -1, 1};
   Solution solution;
-  bool res = solution.hasDuplicate(input);
-  printf("res: %b\n", res);
+  vector<int> vec = {0, 1, 2, 3, 997, -10000, -9999};
+  vector<int> res = solution.twoSum(vec, -19999);
+  vector<int> expected_res = {0, 1};
+  printf("expected_res: %d %d\n", expected_res[0], expected_res[1]);
+  printf("res: %d %d\n", res[0], res[1]);
+  assert(expected_res == res);
   return 0;
 }
