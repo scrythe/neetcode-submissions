@@ -17,7 +17,7 @@ int main() {
   i32 vec_array[] = {0, 1, 2, 3, 997, -10000, -9999};
   i32Slice vec = {.ptr = vec_array, .length = array_length(vec_array)};
   Res res = twoSum(vec, -19999);
-  Res expected_res = {.i = 998, .j = 999};
+  Res expected_res = {.i = 5, .j = 6};
   printf("expected_res: %d %d\n", expected_res.i, expected_res.j);
   printf("res: %d %d\n", res.i, res.j);
   // assert(expected_res == res);

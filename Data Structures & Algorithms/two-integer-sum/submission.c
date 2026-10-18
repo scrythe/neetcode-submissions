@@ -1,5 +1,3 @@
-// unique i j pair
-
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef int32_t i32;
