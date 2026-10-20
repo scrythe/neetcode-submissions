@@ -5,6 +5,7 @@
 using std::string;
 using std::vector;
 
+#define unity
 #include "anagram_group.cpp"
 
 int main() {
@@ -13,11 +14,14 @@ int main() {
   vector<vector<string>> res = solution.groupAnagrams(vec);
   vector<vector<string>> expected_res = {
       {"hat"}, {"act", "cat"}, {"stop", "pots", "tops"}};
-  printf("res: ");
-  for (vector<string> strs : res) {
-    for (string str : strs) {
-      printf("%s", str.c_str());
-    }
-  }
+  printf("res: \n");
+  // for (vector<string> strs : res) {
+  //   if (!strs.empty()) {
+  //     for (string str : strs) {
+  //       printf("%s ", str.c_str());
+  //     }
+  //     printf("\n");
+  //   }
+  // }
   return 0;
 }

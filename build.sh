@@ -34,6 +34,7 @@ if [[ "${release:-0}" == 1 ]]; then
 else
   echo "[debug mode]"
   compile="$compiler -O0 $common_build_flags -Wno-unused-variable -Wno-unused-but-set-variable -DBUILD_DEBUG=1"
+  echo "$compile"
 fi
 
 echo "[building main]"

@@ -1,10 +1,27 @@
+#ifndef unity
+#include <stdint.h>
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
+#endif
+
+#ifdef BUILD_DEBUG
+#define assert(val)                                                            \
+  if (!(val)) {                                                                \
+    __builtin_trap();                                                          \
+  }
+#else
+#define assert(val) (void)(val)
+#endif
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 
 #include <string.h>
 
-#define MAX_AMOUNTS_STRINGS 1000
-#define HASHMAP_CAPACITY 3 * MAX_AMOUNTS_STRINGS
+#define MAX_AMOUNTS_STRINGS 10000
+#define HASHMAP_CAPACITY (3 * MAX_AMOUNTS_STRINGS)
 
 typedef u8 LetterFrequency[26];
 typedef struct {
@@ -13,14 +30,11 @@ typedef struct {
 } LetterFrequencyTotalListSlice;
 
 inline vector<vector<string>> groupAnagrams_inline(vector<string> &strs) {
-  u8 letter_frequency_hashmap[HASHMAP_CAPACITY + 1] = {};
-  LetterFrequencyTotalListSlice letter_frequency_total_list_slice = {};
-  // u8 all_strings_buffer[MAX_AMOUNTS_STRINGS * 100];
-
-  // "struct of arrays"
-  vector<vector<string>> letter_frequency_anagrams =
-      vector<vector<string>>(MAX_AMOUNTS_STRINGS);
-  u16 letter_frequency_list_i_list[MAX_AMOUNTS_STRINGS] = {};
+  u16 letter_frequency_hashmap[HASHMAP_CAPACITY + 1] = {};
+  u16 letter_frequency_hashmap_length = 0;
+  LetterFrequency letter_frequency_total_list[MAX_AMOUNTS_STRINGS + 1] = {};
+  vector<vector<string>> letter_frequency_anagrams_total_list =
+      vector<vector<string>>(MAX_AMOUNTS_STRINGS + 1);
 
   for (u16 i = 0; i < strs.size(); i++) {
     string str = strs[i];
@@ -37,10 +51,44 @@ inline vector<vector<string>> groupAnagrams_inline(vector<string> &strs) {
       letter_frequency_hashed_key =
           (letter_frequency_hashed_key * 31 + letter_frequency);
     }
-    letter_frequency_hashed_key % HASHMAP_CAPACITY;
-    letter_frequency_hashmap[letter_frequency_hashed_key] = i;
+    u16 letter_frequency_bucket_key =
+        letter_frequency_hashed_key % HASHMAP_CAPACITY +
+        1; // 0 value means no element
+
+    u16 letter_frequency_hashmap_value =
+        letter_frequency_hashmap[letter_frequency_bucket_key];
+
+    while (true) {
+      if (letter_frequency_hashmap_value == 0) {
+        letter_frequency_hashmap_length += 1;
+        letter_frequency_hashmap[letter_frequency_bucket_key] =
+            letter_frequency_hashmap_length;
+        assert(letter_frequency_hashmap_length <= 1000);
+        letter_frequency_anagrams_total_list[letter_frequency_hashmap_length]
+            .push_back(str);
+        memcpy(letter_frequency_total_list[letter_frequency_hashmap_length],
+               letter_frequency_map, sizeof(LetterFrequency));
+        break;
+      } else if (memcmp(letter_frequency_map,
+                        letter_frequency_total_list
+                            [letter_frequency_hashmap_value],
+                        sizeof(LetterFrequency)) == 0) {
+        printf("%d\n", letter_frequency_hashmap_value);
+        assert(letter_frequency_hashmap_value <= 1000);
+        letter_frequency_anagrams_total_list[letter_frequency_hashmap_value]
+            .push_back(str);
+        break;
+      } else {
+        letter_frequency_bucket_key += 1;
+        letter_frequency_hashmap_value =
+            letter_frequency_hashmap[letter_frequency_bucket_key];
+      }
+    }
   }
-  return {{"hm"}};
+  return vector<vector<string>>(letter_frequency_anagrams_total_list.begin() +
+                                    1,
+                                letter_frequency_anagrams_total_list.begin() +
+                                    1 + letter_frequency_hashmap_length);
 }
 
 class Solution {
